@@ -1,7 +1,21 @@
+function isWebTarget(caller) {
+  return Boolean(caller && caller.target === 'web');
+}
 
-module.exports = {
+module.exports = api => {
+  const web = api.caller(isWebTarget);
+
+  return {
     presets: [
-      "@babel/preset-react",
-      "@babel/preset-env",
+      '@babel/preset-react',
+      [
+        '@babel/preset-env',
+        {
+          useBuiltIns: web ? 'entry' : undefined,
+          targets: !web ? { node: 'current' } : undefined,
+        },
+      ],
     ],
+    plugins: ['@loadable/babel-plugin'],
   };
+};

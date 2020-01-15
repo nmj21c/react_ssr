@@ -1,62 +1,69 @@
-import path from "path";
-import React from "react";
-import express from "express";
-import { renderToString } from "react-dom/server";
-import { StaticRouter } from "react-router-dom";
-import Helmet from "react-helmet";
-
-import App from "./App";
+import path from 'path';
+import React from 'react';
+import express from 'express';
+import { renderToString } from 'react-dom/server';
+import { StaticRouter } from 'react-router-dom';
+import Helmet from 'react-helmet';
+import { ChunkExtractor } from '@loadable/server';
 
 const app = express();
 
-if (process.env.NODE_ENV !== "production") {
-    const webpack = require("webpack");
-    const webpackConfig = require("../webpack.client.js");
+if (process.env.NODE_ENV !== 'production') {
+  const webpack = require('webpack');
+  const webpackConfig = require('../webpack.client.js');
 
-    const webpackDevMiddleware = require("webpack-dev-middleware");
-    const webpackHotMiddleware = require("webpack-hot-middleware");
+  const webpackDevMiddleware = require('webpack-dev-middleware');
+  const webpackHotMiddleware = require('webpack-hot-middleware');
 
-    const compiler = webpack(webpackConfig);
+  const compiler = webpack(webpackConfig);
 
-    app.use(
-        webpackDevMiddleware(compiler, {
-            logLevel: "silent",
-            publicPath: webpackConfig.output.publicPath,
-        }),
-    )
+  app.use(
+    webpackDevMiddleware(compiler, {
+      logLevel: 'silent',
+      publicPath: webpackConfig[0].output.publicPath,
+    }),
+  );
 
-    app.use(webpackHotMiddleware(compiler));
+  app.use(webpackHotMiddleware(compiler));
 }
 
 app.use(express.static(path.resolve(__dirname)));
 
-app.get("*", (req, res) => {
-    const context = {};
+app.get('*', (req, res) => {
+  const nodeStats = path.resolve(__dirname, './node/loadable-stats.json');
+  const webStats = path.resolve(__dirname, './web/loadable-stats.json');
+  const nodeExtractor = new ChunkExtractor({ statsFile: nodeStats });
+  const { default: App } = nodeExtractor.requireEntrypoint();
+  const webExtractor = new ChunkExtractor({ statsFile: webStats });
 
-    const html = renderToString(
-        <StaticRouter location={req.url} context={context}>
-            <App />
-        </StaticRouter>
-    )
+  const context = {};
 
-    const helmet = Helmet.renderStatic();
+  const jsx = webExtractor.collectChunks(
+    <StaticRouter location={req.url} context={context}>
+      <App />
+    </StaticRouter>
+  );
 
-    res.set("content-type", "text/html");
-    res.send(`
-        <!DOCTYPE html>
-        <html lang="en">
+  const html = renderToString(jsx);
+  const helmet = Helmet.renderStatic();
+
+  res.set('content-type', 'text/html');
+  res.send(`
+    <!DOCTYPE html>
+      <html lang="en">
         <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <meta http-equiv="X-UA-Compatible" content="ie=edge">
-            ${helmet.title.toString()}
+          <meta name="viewport" content="width=device-width, user-scalable=no">
+          <meta name="google" content="notranslate">
+          ${helmet.title.toString()}
+          ${webExtractor.getLinkTags()}
+          ${webExtractor.getStyleTags()}
         </head>
         <body>
-            <div id="root">${html}</div>
-            <script type="text/javascript" src="main.js"></script>
+          <div id="root">${html}</div>
+          ${webExtractor.getScriptTags()}
         </body>
-        </html>
-    `);
+      </html>
+  `);
 });
 
-app.listen(3003, () => console.log("server started http://localhost:3003"));
+app.listen(3003, () => console.log('Server started http://localhost:3003'));

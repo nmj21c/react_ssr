@@ -84,3 +84,6 @@
 
     devServer : express, dev-server, HMR 기능을 한번에 해결해주던 webapck-dev-server 를 각각의 패키지를 써서 대체하겠습니다. 앞서 말씀드린대로 서버사이드 렌더링에서 WDS의 지원이 제한적이기 때문입니다. webpack config에서는 삭제해주시면 됩니다.
 ```
+
+## env3 (Code-splitting)
+- yarn add @loadable/component @loadable/webpack-plugin @loadable/babel-plugin @loadable/server
