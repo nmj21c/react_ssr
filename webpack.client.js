@@ -2,6 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 const nodeExternals = require('webpack-node-externals');
 const LoadablePlugin = require('@loadable/webpack-plugin');
+// const ManifestPlugin = require('webpack-manifest-plugin');
 
 /**
  * web의 경우 HMR 사용하기 위한 스크립트 생성
@@ -18,8 +19,31 @@ const getEntryPoint = (target) => {
   if (target === 'node') {
     return ['./src/App.js'];
   } else {
-    return [hotMiddlewareScript, './src/index.js'];
+    let entrys = [];
+    if(process.env.NODE_ENV !== 'production') {
+      entrys.push(hotMiddlewareScript);
+    }
+    entrys.push('./src/index.js');
+    return entrys;
+    // return [hotMiddlewareScript, './src/index.js'];
   }
+}
+
+/**
+ * 플러그인 설정
+ * LoadablePlugin : SSR의 code splitting 플러그인 @loadable/webpack-plugin
+ * webpack.HotModuleReplacementPlugin : 소스 변화 감지를 하여 자동 반영
+ * @param {*} target 
+ */
+const getPlugins = (target) => {
+  let plugins = [new LoadablePlugin()];
+  
+  if (target === 'web' && process.env.NODE_ENV !== 'production') {
+    console.log('add Hotmodule');
+    plugins.push(new webpack.HotModuleReplacementPlugin());
+  }
+
+  return plugins;
 }
 
 /**
@@ -62,7 +86,7 @@ const getConfig = (target) => ({
   output: {
     path: path.resolve(__dirname, `dist/${target}`),
     // filename: '[name].js',
-    chunkFilename: process.env.NODE_ENV === 'production' ? '[name].[chunkhash].js' : '[name].[hash].js',
+    chunkFilename: process.env.NODE_ENV === 'production' ? '[name].[chunkhash].js' : '[name].js',
     publicPath: `/assets/${target}/`,
     libraryTarget: target === 'node' ? 'commonjs2' : undefined,
   },
@@ -95,11 +119,12 @@ const getConfig = (target) => ({
    * LoadablePlugin : SSR의 code splitting 플러그인 @loadable/webpack-plugin
    * webpack.HotModuleReplacementPlugin : 소스 변화 감지를 하여 자동 반영
    */
-  plugins: (
-    target === 'web' ? 
-      [new LoadablePlugin(), new webpack.HotModuleReplacementPlugin()] 
-      : [new LoadablePlugin()]
-  ),
+  // plugins: (
+  //   target === 'web' ? 
+  //     [new LoadablePlugin(), new webpack.HotModuleReplacementPlugin()]
+  //     : [new LoadablePlugin()]
+  // ),
+  plugins: getPlugins(target),
 
   /**
    * webpack에서 제외할 것들 정의

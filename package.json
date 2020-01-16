@@ -28,12 +28,12 @@
     "webpack-node-externals": "^1.7.2"
   },
   "scripts": {
-    "prestart:ssr": "npm run build:dev",
-    "start:ssr": "node ./dist/server.js",
+    "prestart:ssr": "rm -rf dist/",
+    "start:ssr": "npm run build:dev && node ./dist/server.js",
     "start": "webpack-dev-server --env=dev --profile --colors",
     "prebuild": "rm -rf dist/",
-    "build": "NODE_ENV=production npm run build:server && NODE_ENV=production npm run build:client",
-    "build:prod": "NODE_ENV=production npm run build:server && NODE_ENV=production npm run build:client",
+    "build": "npm run build:prod",
+    "build:prod": "NODE_ENV=production npm run build:client && NODE_ENV=production npm run build:server",
     "prebuild:dev": "rm -rf dist/",
     "build:dev": "NODE_ENV=development npm run build:client && NODE_ENV=development npm run build:server",
     "build:server": "webpack --env=server --progress --profile --colors",
