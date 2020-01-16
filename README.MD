@@ -31,13 +31,13 @@
 - @loadable/babel-plugin
 - @loadable/webpack-plugin
 - babel-loader
-- html-webpack-plugin
-- webpack
-- webpack-cli
-- webpack-dev-middleware
-- webpack-dev-server : [WDS]
-- webpack-hot-middleware
-- webpack-node-externals
+- html-webpack-plugin : 웹팩의 html 플러그인
+- webpack : webpack
+- webpack-cli : webpack command line interface
+- webpack-dev-middleware : [WDM] express 서버에서 파일이 수정될때 변경된 파일과 그 정보를 만들어주는 플러그인
+- webpack-dev-server : [WDS] 웹팩 개발 서버 플러그인 webpack.dev.js 에 설정함
+- webpack-hot-middleware : [WHM] WDM 이 만들어진 정보를 브라우져에 갱신 시키는 플러그인 (WDS 의 hot 의 기능)
+- webpack-node-externals : 번들 파일에 불필요한 node_modules 를 빼주는 역할 (SSR에서는 결과물의 html 만 먼저 보여주는 역할이기에 node_modules 가 필요없음)
 
 ## loadable component 개발 가이드
 - loadable component import
