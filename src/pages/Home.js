@@ -1,5 +1,5 @@
 import React from "react";
 
 export default () => (
-    <div>Home Sweet home1</div>
+    <div>Home Sweet home</div>
 )

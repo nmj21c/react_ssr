@@ -8,28 +8,14 @@ import { ChunkExtractor } from '@loadable/server';
 
 const app = express();
 
-if (process.env.NODE_ENV !== 'production') {
-  const webpack = require('webpack');
-  const webpackConfig = require('../webpack.client.js');
+const DEFAULT_PORT = 3000;
 
-  const webpackDevMiddleware = require('webpack-dev-middleware');
-  const webpackHotMiddleware = require('webpack-hot-middleware');
-
-  const compiler = webpack(webpackConfig);
-
-  app.use(
-    webpackDevMiddleware(compiler, {
-      logLevel: 'silent',
-      publicPath: webpackConfig[0].output.publicPath,
-    }),
-  );
-
-  app.use(webpackHotMiddleware(compiler));
-}
-
-app.use(express.static(path.resolve(__dirname)));
-
-app.get('*', (req, res) => {
+/**
+ * React node render
+ * @param {*} req 
+ * @param {*} res 
+ */
+const reactRender = (req, res, next) => {
   const nodeStats = path.resolve(__dirname, './node/loadable-stats.json');
   const webStats = path.resolve(__dirname, './web/loadable-stats.json');
   const nodeExtractor = new ChunkExtractor({ statsFile: nodeStats });
@@ -64,6 +50,45 @@ app.get('*', (req, res) => {
         </body>
       </html>
   `);
-});
+}
 
-app.listen(3003, () => console.log('Server started http://localhost:3003'));
+/**
+ * procudtion 일때는 express router middleware 사용
+ * development 일때는 WDM, WHM 사용하여 HMR 활성화
+ */
+if (process.env.NODE_ENV === 'production') {
+  const webpackConfig = require('../webpack.client.js');
+
+  const router = express.Router();
+
+  // webpack public path를 dist/web 과 연결, 이것을 안하면 chunkfile들이 404 not found 나옴
+  router.use(webpackConfig[0].output.publicPath, express.static(path.resolve(__dirname, '..', 'dist/web')));
+ 
+  // 모든 url을 reactRender 처리
+  router.get('*', reactRender);
+
+  app.use(router);
+} else {
+  const webpack = require('webpack');
+  const webpackConfig = require('../webpack.client.js');
+
+  const webpackDevMiddleware = require('webpack-dev-middleware');
+  const webpackHotMiddleware = require('webpack-hot-middleware');
+
+  const compiler = webpack(webpackConfig);
+
+  app.use(
+    webpackDevMiddleware(compiler, {
+      logLevel: 'silent',
+      publicPath: webpackConfig[0].output.publicPath,
+    }),
+  );
+
+  app.use(webpackHotMiddleware(compiler));
+
+  app.use(express.static(path.resolve(__dirname)));
+
+  app.get('*', reactRender);
+}
+
+app.listen(DEFAULT_PORT, () => console.log(`Server started http://localhost:${DEFAULT_PORT}`));
