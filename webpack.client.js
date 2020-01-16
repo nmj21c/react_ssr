@@ -53,6 +53,10 @@ const getConfig = (target) => ({
    */
   entry: getEntryPoint(target),
 
+  /**
+   * SSR, CSR 구분하여 결과 저장 경로 변경
+   * libraryTarget 의 경우 node는 commonjs 를 사용하기에 commonjs2 지정, web은 undefined 처리
+   */
   output: {
     path: path.resolve(__dirname, `dist/${target}`),
     filename: '[name].js',
