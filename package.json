@@ -32,7 +32,7 @@
     "start:ssr": "node ./dist/server.js",
     "start": "webpack-dev-server --env=dev --profile --colors",
     "prebuild": "rm -rf dist/",
-    "build": "npm run build:server && npm run build:server",
+    "build": "npm run build:server && npm run build:client",
     "build:dev": "rm -rf dist/ && NODE_ENV=development yarn build:client && NODE_ENV=development yarn build:server",
     "build:server": "webpack --env=server --progress --profile --colors",
     "build:client": "webpack --env=client --progress --profile --colors"
