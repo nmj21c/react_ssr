@@ -56,10 +56,13 @@ const getConfig = (target) => ({
   /**
    * SSR, CSR 구분하여 결과 저장 경로 변경
    * libraryTarget 의 경우 node는 commonjs 를 사용하기에 commonjs2 지정, web은 undefined 처리
+   * cache 전략으로 js 파일은 hash 값을 가지도록 처리 : dev = hash, prod = chunkhash
+   * finename에 [chunkhash] 설정하면 오류 남 chunkFilename 으로 처리 하게 수정
    */
   output: {
     path: path.resolve(__dirname, `dist/${target}`),
-    filename: '[name].js',
+    // filename: '[name].js',
+    chunkFilename: process.env.NODE_ENV === 'production' ? '[name].[chunkhash].js' : '[name].[hash].js',
     publicPath: `/assets/${target}/`,
     libraryTarget: target === 'node' ? 'commonjs2' : undefined,
   },
