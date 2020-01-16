@@ -35,7 +35,7 @@
 - webpack
 - webpack-cli
 - webpack-dev-middleware
-- webpack-dev-server
+- webpack-dev-server : [WDS]
 - webpack-hot-middleware
 - webpack-node-externals
 
@@ -48,6 +48,16 @@
 ```
     without loadable : import Home from "./components/Home";
     with loadable : const Home = loadable(() => import(/* webpackChunkName : "Home" */ "./components/Home")); // webpakcChunkName 는 webpakc 분할 이름 지정 힌트
+```
+
+## config 설명
+- webpack.config.js
+```
+    webpack CLI 실행시 기본적으로 읽는 파일, dev, client, server 를 나누어서 하기 위해 분기 처리만 함. start script 에 --env=dev 이 있으므로webpack.dev.js 를 바라봄
+```
+- webpack.dev.js
+```
+    HMR(Hot module replace) 설정
 ```
 
 ## env1 (Webpack + react + babel)
