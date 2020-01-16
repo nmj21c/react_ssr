@@ -1,4 +1,4 @@
-import { hydrate } from "react-dom";
+import { hydrate, render } from "react-dom";
 import React from "react";
 import { BrowserRouter } from "react-router-dom";
 import { loadableReady } from '@loadable/component';

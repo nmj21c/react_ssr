@@ -1,5 +1,55 @@
 # React SSR
 
+## How to use.
+- 개발(without SSR)
+```
+    yarn start
+```
+- 개발(with SSR)
+```
+    yarn start:ssr
+```
+- build
+```
+    yarn build
+    node ./dist/server.js
+```
+
+## include packages
+### dependencies
+- @loadable/component : component code splitting (lazy loading) module
+- @loadable/server : SSR code splitting (lazy loading) module
+- express : SSR node WAS
+- react : react module
+- react-dom : react module
+- react-helmet : react <head /> controle module
+- react-router-dom : react router module
+### devDependencies
+- @babel/core : es6 module
+- @babel/preset-env : babel env module
+- @babel/preset-react : babel react module
+- @loadable/babel-plugin
+- @loadable/webpack-plugin
+- babel-loader
+- html-webpack-plugin
+- webpack
+- webpack-cli
+- webpack-dev-middleware
+- webpack-dev-server
+- webpack-hot-middleware
+- webpack-node-externals
+
+## loadable component 개발 가이드
+- loadable component import
+```
+    import loadable from "@loadable/component";
+```
+- component import
+```
+    without loadable : import Home from "./components/Home";
+    with loadable : const Home = loadable(() => import(/* webpackChunkName : "Home" */ "./components/Home")); // webpakcChunkName 는 webpakc 분할 이름 지정 힌트
+```
+
 ## env1 (Webpack + react + babel)
 - yarn init -y && git init
 - yarn add react react-dom
@@ -86,4 +136,5 @@
 ```
 
 ## env3 (Code-splitting)
-- yarn add @loadable/component @loadable/webpack-plugin @loadable/babel-plugin @loadable/server
+- yarn add @loadable/component @loadable/server
+- yarn add --dev @loadable/babel-plugin @loadable/webpack-plugin
