@@ -1,15 +1,15 @@
 # React SSR
 
 ## How to use.
-- 개발(without SSR) ! warning 등 무시
+- Developement(WSD) ! warning 등 무시
 ```
     yarn start:wsd
 ```
-- 개발(with SSR)
+- Developement(SSR)
 ```
     yarn start
 ```
-- 운영(with SSR)
+- production(with SSR)
 ```
     yarn start:prd
 ```
