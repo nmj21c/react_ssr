@@ -1,6 +1,8 @@
 const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const {CleanWebpackPlugin} = require("clean-webpack-plugin");
 
 module.exports = {
   
@@ -26,6 +28,7 @@ module.exports = {
    */
   output: {
     filename: 'bundle.js',
+    // publicPath: path.join(__dirname, 'public')
     // path: path.join(__dirname, 'dist')
   },
   
@@ -45,7 +48,7 @@ module.exports = {
     port: 3000,
     hot: true,
     publicPath: '/',
-    open: true
+    // open: true
   },
 
   /**
@@ -53,14 +56,49 @@ module.exports = {
    * test, use 로 구성된 객체로 설정
    * test 에 로딩할 파일 지정
    * use에 적용할 로더 지정
-   * CSS, SCSS 등 여기에 추가해야 함
+   * loader는 오른쪽에서 왼쪽으로 순차 적용
    */
   module: {
     rules: [
+      /**
+       * js 파일은 babel 을 사용한다.
+       */
       {
         test: /\.js?$/,
         use: ['babel-loader']
       },
+      /**
+       * image는 file-loader 을 사용한다.
+       * url-loader을 사용하면 이미지를 텍스트로 변형하여 가지고 있는다.
+       */
+      {
+        test: /\.(jpe?g|png|gif|svg)$/i,
+        use: [
+          {
+            loader: 'file-loader',
+            // loader: 'url-loader',
+            options: {
+              publicPath: '/',
+              name: '[name].[ext]?[hash]'
+            }
+          }
+        ]
+      },
+      /**
+       * css, scss 설정
+       * style-loader 을 사용하면 <style>...</style> 안으로 들어가기 때문에 HMR 가능
+       * MiniCssExtractPlugin 을 사용하면 css 로 생성
+       */
+      {
+        test: /\.css$/,
+        // use: [MiniCssExtractPlugin.loader, 'css-loader']
+        use: ['style-loader', 'css-loader']
+      },
+      {
+        test: /\.scss$/,
+        // use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader']
+        use: ['style-loader', 'css-loader', 'sass-loader']
+      }
     ],
   },
 
@@ -82,5 +120,9 @@ module.exports = {
       filename: 'index.html',
       template: path.join(__dirname, 'public/index_dev.html'),
     }),
+    // new MiniCssExtractPlugin({
+    //   filename: 'style.css'
+    // }),
+    new CleanWebpackPlugin()
   ],
 }

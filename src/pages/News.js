@@ -2,7 +2,7 @@ import React from "react";
 import Helmet from "react-helmet";
 
 export default () => (
-    <div>
+    <div className="home-bg">
         <Helmet>
             <title>News</title>
         </Helmet>

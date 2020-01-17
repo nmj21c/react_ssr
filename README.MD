@@ -61,6 +61,14 @@ typescript를 같이 사용하시거나 DylanJu 님의 원본 및 코드 설명�
 - webpack-dev-server : [WDS] 웹팩 개발 서버 플러그인 webpack.dev.js 에 설정함
 - webpack-hot-middleware : [WHM] WDM 이 만들어진 정보를 브라우져에 갱신 시키는 플러그인 (WDS 의 hot 의 기능)
 - webpack-node-externals : 번들 파일에 불필요한 node_modules 를 빼주는 역할 (SSR에서는 결과물의 html 만 먼저 보여주는 역할이기에 node_modules 가 필요없음)
+- file-loader : 웹팩에서 이미지등 파일을 복사하는 모듈
+- url-loader : 웹펙에서 이미지등 파일을 스트링으로 가지고 있는 모듈
+- clean-webpack-plugin : 웹팩 dist 클린 플러그인
+- sass-loader : webpack sass loader
+- node-sass : sass-loader 에서 필요
+- css-loader : css 파일 로더
+- style-loader : html 의 style 태그에 css를 넣음
+- mini-css-extract-plugin : css 로더의 결과를 css 파일로 생성
 
 ## loadable component 개발 가이드
 - loadable component import
