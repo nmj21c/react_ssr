@@ -2,6 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 const nodeExternals = require('webpack-node-externals');
 const LoadablePlugin = require('@loadable/webpack-plugin');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 // const ManifestPlugin = require('webpack-manifest-plugin');
 
 /**
@@ -38,8 +39,13 @@ const getEntryPoint = (target) => {
 const getPlugins = (target) => {
   let plugins = [new LoadablePlugin()];
   
+  // if (process.env.NODE_ENV === 'production') {
+    
+  // }
+
+  plugins.push(new MiniCssExtractPlugin({filename: 'style.css'}));
+
   if (target === 'web' && process.env.NODE_ENV !== 'production') {
-    console.log('add Hotmodule');
     plugins.push(new webpack.HotModuleReplacementPlugin());
   }
 
@@ -104,6 +110,35 @@ const getConfig = (target) => ({
         test: /\.js?$/,
         use: ['babel-loader'],
       },
+      /**
+       * image는 file-loader 을 사용한다.
+       * publicPath를 web으로 고정한 이유는 SSR 시 node -> web 으로 path가 변경되어 react 에서 경고
+       */
+      {
+        test: /\.(jpe?g|png|gif|svg)$/i,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              publicPath: `/assets/web/`,
+              name: '[name].[ext]?[hash]'
+            }
+          }
+        ]
+      },
+      /**
+       * css, scss 설정
+       * style-loader 을 사용하면 <style>...</style> 안으로 들어가기 때문에 HMR 가능
+       * MiniCssExtractPlugin 을 사용하면 css 로 생성
+       */
+      {
+        test: /\.css$/,
+        use: [MiniCssExtractPlugin.loader, 'css-loader']
+      },
+      {
+        test: /\.scss$/,
+        use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader']
+      }
     ],
   },
 

@@ -1,5 +1,6 @@
 const path = require('path');
 const nodeExternals = require('webpack-node-externals');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
   
@@ -55,6 +56,35 @@ module.exports = {
         test: /\.js?$/,
         use: ['babel-loader']
       },
+      /**
+       * image는 file-loader 을 사용한다.
+       * publicPath를 web으로 고정한 이유는 SSR 시 node -> web 으로 path가 변경되어 react 에서 경고
+       */
+      {
+        test: /\.(jpe?g|png|gif|svg)$/i,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              publicPath: `/assets/web/`,
+              name: '[name].[ext]?[hash]'
+            }
+          }
+        ]
+      },
+      /**
+       * css, scss 설정
+       * style-loader 을 사용하면 <style>...</style> 안으로 들어가기 때문에 HMR 가능
+       * MiniCssExtractPlugin 을 사용하면 css 로 생성
+       */
+      {
+        test: /\.css$/,
+        use: [MiniCssExtractPlugin.loader, 'css-loader']
+      },
+      {
+        test: /\.scss$/,
+        use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader']
+      }
     ],
   },
 
@@ -70,4 +100,8 @@ module.exports = {
    * 번들링 시점에 번들파일에 해당 것들이 포함되지 않도록 하며, libraryTarget 옵션에 설정된 모듈 포르 방식으로 변환
    */
   externals: [nodeExternals()],
+
+  plugins: [
+    new MiniCssExtractPlugin({filename: 'style.css'})
+  ]
 };
