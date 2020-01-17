@@ -1,12 +1,18 @@
 # React SSR
 
 ## 설명
-```
-React + SSR + Code splitting 구조
-DylanJu 님의 React SSR 구축하기에서 typescript 제거 및 production 에서 WDM, WHM 제거한 버전입니다.
-typescript를 같이 사용하시거나 DylanJu 님의 원본 및 설명을 보시려면 [Github repository](https://github.com/DylanJu/react-typescript-ssr-codeSplitting) 으로 이동하세요 
 
-```
+CRA를 사용하지 않는 React + SSR + Code splitting 구조
+
+DylanJu 님의 React SSR 구축하기에서 아래와 같은 수정을 하였습니다.
+- typescript 제거
+- production 에서 WDM, WHM 제거
+- scripts 를 변경
+- js 번들명을 chunkhash 로 변경
+
+typescript를 같이 사용하시거나 DylanJu 님의 원본 및 코드 설명을 보시려면 [react-typescript-ssr-codeSplitting](https://github.com/DylanJu/react-typescript-ssr-codeSplitting) 으로 이동하세요 
+
+
 
 ## How to use.
 - Developement(WSD) ! warning 등 무시
@@ -42,12 +48,12 @@ typescript를 같이 사용하시거나 DylanJu 님의 원본 및 설명을 보�
 - react-helmet : react <head /> controle module
 - react-router-dom : react router module
 ### devDependencies
-- @babel/core : es6 module
-- @babel/preset-env : babel env module
+- @babel/core : babel core
+- @babel/preset-env : babel module
 - @babel/preset-react : babel react module
-- @loadable/babel-plugin
-- @loadable/webpack-plugin
-- babel-loader
+- @loadable/babel-plugin : loadable component babel module
+- @loadable/webpack-plugin : loadable component webpack module
+- babel-loader : babel
 - html-webpack-plugin : 웹팩의 html 플러그인
 - webpack : webpack
 - webpack-cli : webpack command line interface
@@ -64,7 +70,7 @@ typescript를 같이 사용하시거나 DylanJu 님의 원본 및 설명을 보�
 - component import
 ```
     without loadable : import Home from "./components/Home";
-    with loadable : const Home = loadable(() => import(/* webpackChunkName : "Home" */ "./components/Home")); // webpakcChunkName 는 webpakc 분할 이름 지정 힌트
+    with loadable : const Home = loadable(() => import(/* webpackChunkName : "Home" */ "./components/Home")); // webpakcChunkName 는 webpakc chunk 이름 지정 힌트
 ```
 
 ## config 설명
