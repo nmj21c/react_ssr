@@ -1,5 +1,13 @@
 # React SSR
 
+## 설명
+```
+React + SSR + Code splitting 구조
+DylanJu 님의 React SSR 구축하기에서 typescript 제거 및 production 에서 WDM, WHM 제거한 버전입니다.
+typescript를 같이 사용하시거나 DylanJu 님의 원본 및 설명을 보시려면 [Github repository](https://github.com/DylanJu/react-typescript-ssr-codeSplitting) 으로 이동하세요 
+
+```
+
 ## How to use.
 - Developement(WSD) ! warning 등 무시
 ```
@@ -62,9 +70,5 @@
 ## config 설명
 - webpack.config.js
 ```
-    webpack CLI 실행시 기본적으로 읽는 파일, dev, client, server 를 나누어서 하기 위해 분기 처리만 함. start script 에 --env=dev 이 있으므로webpack.dev.js 를 바라봄
-```
-- webpack.dev.js
-```
-    HMR(Hot module replace) 설정
+    webpack CLI 실행시 기본적으로 읽는 파일, dev, client, server 를 나누어서 하기 위해 분기 처리만 함.
 ```
