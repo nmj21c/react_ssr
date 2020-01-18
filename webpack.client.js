@@ -43,7 +43,7 @@ const getPlugins = (target) => {
     
   // }
 
-  plugins.push(new MiniCssExtractPlugin({filename: 'style.css'}));
+  plugins.push(new MiniCssExtractPlugin({filename: '[name].[chunkhash].css'}));
 
   if (target === 'web' && process.env.NODE_ENV !== 'production') {
     plugins.push(new webpack.HotModuleReplacementPlugin());
