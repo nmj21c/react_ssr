@@ -4,7 +4,7 @@ import './Home.scss';
 
 export default () => (
     <div className="home">
-        <div className="bg">Home Sweet home3</div>
+        <div className="bg">Home Sweet home</div>
         <img src={shibaImg} alt="shiba img" />
     </div>
-)
+);

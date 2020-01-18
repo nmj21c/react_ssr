@@ -39,17 +39,90 @@ const getEntryPoint = (target) => {
 const getPlugins = (target) => {
   let plugins = [new LoadablePlugin()];
   
-  // if (process.env.NODE_ENV === 'production') {
-    
-  // }
-
-  plugins.push(new MiniCssExtractPlugin({filename: '[name].[chunkhash].css'}));
+  // 개발이고 env web 이 아닐때는 MiniCssExtractPlugin 을 사용하기에 플러그인 추가
+  if (!(process.env.NODE_ENV !== 'production' && target === 'web')) {
+    plugins.push(new MiniCssExtractPlugin({filename: '[name].[chunkhash].css'}));
+  }
 
   if (target === 'web' && process.env.NODE_ENV !== 'production') {
     plugins.push(new webpack.HotModuleReplacementPlugin());
   }
 
   return plugins;
+}
+
+/**
+ * 모듈의 rules 를 조건에 따라 분기 하기 위한 메소드
+ * 바벨과 이미지는 공통이므로 무조건 처리
+ * css 는 HMR 때문에 분기 처리
+ * @param {*} target 
+ */
+const getModuleRules = (target) => {
+  let rules = [];
+
+  rules.push(
+    {
+      test: /\.js?$/,
+      use: ['babel-loader'],
+    }
+  )
+  
+  /**
+   * image는 file-loader 을 사용한다.
+   * publicPath 는 번들을 매핑할 주소, 저곳에 저장하는게 아님
+   * web으로 고정한 이유는 SSR 시 node -> web 으로 path가 변경되어 react 에서 빨간경고 뜨기에 이미지는 web 껏을 로드하기 위함
+   */
+  rules.push(
+    {
+      test: /\.(jpe?g|png|gif|svg)$/i,
+      use: [
+        {
+          loader: 'file-loader',
+          options: {
+            publicPath: `/assets/web/`,
+            name: '[name].[ext]?[hash]'
+          }
+        }
+      ]
+    }
+  )
+  
+  /**
+   * css, scss 설정
+   * style-loader 을 사용하면 <style>...</style> 안으로 들어가기 때문에 HMR 가능
+   * MiniCssExtractPlugin 을 사용하면 css 로 생성
+   */
+  if(process.env.NODE_ENV !== 'production' && target === 'web') {
+    rules.push(
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader'],
+      }
+    )
+    rules.push(
+      {
+        test: /\.scss$/,
+        use: ['style-loader', 'css-loader', 'sass-loader']
+      }
+    )
+  } else {
+    rules.push(
+      {
+        test: /\.css$/,
+        use: [MiniCssExtractPlugin.loader, 'css-loader']
+      }
+    )
+    rules.push(
+      {
+        test: /\.scss$/,
+        use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader']
+      }
+    )
+  }
+  
+
+
+  return rules;
 }
 
 /**
@@ -105,41 +178,7 @@ const getConfig = (target) => ({
    * CSS, SCSS 등 여기에 추가해야 함
    */
   module: {
-    rules: [
-      {
-        test: /\.js?$/,
-        use: ['babel-loader'],
-      },
-      /**
-       * image는 file-loader 을 사용한다.
-       * publicPath를 web으로 고정한 이유는 SSR 시 node -> web 으로 path가 변경되어 react 에서 경고
-       */
-      {
-        test: /\.(jpe?g|png|gif|svg)$/i,
-        use: [
-          {
-            loader: 'file-loader',
-            options: {
-              publicPath: `/assets/web/`,
-              name: '[name].[ext]?[hash]'
-            }
-          }
-        ]
-      },
-      /**
-       * css, scss 설정
-       * style-loader 을 사용하면 <style>...</style> 안으로 들어가기 때문에 HMR 가능
-       * MiniCssExtractPlugin 을 사용하면 css 로 생성
-       */
-      {
-        test: /\.css$/,
-        use: [MiniCssExtractPlugin.loader, 'css-loader']
-      },
-      {
-        test: /\.scss$/,
-        use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader']
-      }
-    ],
+    rules: getModuleRules(target)
   },
 
   /**
