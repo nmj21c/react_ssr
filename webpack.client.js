@@ -3,7 +3,6 @@ const webpack = require('webpack');
 const nodeExternals = require('webpack-node-externals');
 const LoadablePlugin = require('@loadable/webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-// const ManifestPlugin = require('webpack-manifest-plugin');
 
 /**
  * web의 경우 HMR 사용하기 위한 스크립트 생성
@@ -193,11 +192,6 @@ const getConfig = (target) => ({
    * LoadablePlugin : SSR의 code splitting 플러그인 @loadable/webpack-plugin
    * webpack.HotModuleReplacementPlugin : 소스 변화 감지를 하여 자동 반영
    */
-  // plugins: (
-  //   target === 'web' ? 
-  //     [new LoadablePlugin(), new webpack.HotModuleReplacementPlugin()]
-  //     : [new LoadablePlugin()]
-  // ),
   plugins: getPlugins(target),
 
   /**
