@@ -54,7 +54,12 @@ module.exports = {
     rules: [
       {
         test: /\.js?$/,
-        use: ['babel-loader']
+        use: {
+          loader: 'babel-loader',
+          options: {
+            cacheDirectory: true
+          }
+        }
       },
       /**
        * image는 file-loader 을 사용한다.
@@ -101,7 +106,15 @@ module.exports = {
    */
   externals: [nodeExternals()],
 
+  /**
+     * moduleIds : 'hsahed' : 캐시 사용으로 빠르게 처리
+     */
+    optimization: {
+      moduleIds: 'hashed'
+  },
+
   plugins: [
     new MiniCssExtractPlugin({filename: 'style.css'})
   ]
+  
 };

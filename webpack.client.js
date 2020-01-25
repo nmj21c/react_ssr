@@ -62,7 +62,12 @@ const getModuleRules = (target) => {
   rules.push(
     {
       test: /\.js?$/,
-      use: ['babel-loader'],
+      use: {
+        loader: 'babel-loader',
+        options: {
+          cacheDirectory: true
+        }
+      }
     }
   )
   
@@ -193,6 +198,13 @@ const getConfig = (target) => ({
    * webpack.HotModuleReplacementPlugin : 소스 변화 감지를 하여 자동 반영
    */
   plugins: getPlugins(target),
+
+  /**
+     * moduleIds : 'hsahed' : 캐시 사용으로 빠르게 처리
+     */
+    optimization: {
+      moduleIds: 'hashed'
+  },
 
   /**
    * webpack에서 제외할 것들 정의
